@@ -305,6 +305,7 @@ else ifeq ($(TARGET_OS),3ds)
     SERVEFILES := python $(BUILDTOOLS_DIR)/3ds/servefiles.py
 
     ifeq ($(HOST_OS),windows)
+        SEVENZIP := ../$(BUILDTOOLS_DIR)/7z/7z.exe
         ifeq ($(HOST_ARCH),x86_64)
             MAKEROM := $(BUILDTOOLS_DIR)/3ds/makerom64.exe
             BANNERTOOL := $(BUILDTOOLS_DIR)/3ds/bannertool64.exe
@@ -568,7 +569,8 @@ $(OUTPUT_ZIP_FILE): $(OUTPUT_FILES) $(EXTRA_OUTPUT_FILES)
 	@echo $@
 	@$(EXTRA_OUTPUT_COPY_CMD)
 	@cd $(OUTPUT_DIR); \
-	zip -r $(patsubst $(OUTPUT_DIR)/%,%,$@ * -x $(OUTPUT_ZIP_FILE)) > /dev/null
+	zip -r $(patsubst $(OUTPUT_DIR)/%,%,$@ * -x $(OUTPUT_ZIP_FILE)) > /dev/null || \
+	$(SEVENZIP) a -tzip -r $(patsubst $(OUTPUT_DIR)/%,%,$@ * -x!$(OUTPUT_ZIP_FILE)) > /dev/null
 
 $(TARGET_OUTPUT_DIR)/$(STRIPPED_NAME): $(OBJECT_FILES)
 	@echo $@
